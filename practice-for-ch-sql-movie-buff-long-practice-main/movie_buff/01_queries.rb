@@ -25,7 +25,7 @@ def harrison_ford
     .joins(:movies)
     .where(actors: { name: "Harrison Ford" })
     .where.not(castings: { ord: 1 })
-    .select("movies.id", :title)
+    .select("movies.id", "title")
 end
 
 def biggest_cast
@@ -49,7 +49,6 @@ def biggest_cast
     .order("COUNT(name) DESC")
     .limit(3)
     .select("movies.id", "title")
-
 end
 
 def directed_by_one_of(them)
@@ -68,9 +67,9 @@ def directed_by_one_of(them)
   # Note: Directors appear in the 'actors' table.
 
   Movie
-  .where(director: them)
-  .select(:id,:title)
-
+    .joins(:director)
+    .where("actors.name IN (?)", them)
+    .select("movies.id", "title")
 end
 
 def movie_names_before_1940
@@ -85,4 +84,7 @@ def movie_names_before_1940
   #
   # Use pluck to find the title of all movies made before 1940.
 
+  Movie
+    .where("yr < 1940")
+    .pluck("title")
 end
