@@ -43,6 +43,13 @@ def biggest_cast
   # Find the id and title of the 3 movies with the largest casts (i.e., most
   # actors).
 
+  Movie
+    .joins(:actors)
+    .group("movies.id")
+    .order("COUNT(name) DESC")
+    .limit(3)
+    .select("movies.id", "title")
+
 end
 
 def directed_by_one_of(them)
@@ -59,6 +66,10 @@ def directed_by_one_of(them)
   # Find the id and title of all the movies directed by one of 'them'.
 
   # Note: Directors appear in the 'actors' table.
+
+  Movie
+  .where(director: them)
+  .select(:id,:title)
 
 end
 
